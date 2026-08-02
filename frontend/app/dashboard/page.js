@@ -33,12 +33,15 @@ export default function DashboardPage() {
       .finally(() => setLoading(false));
   }, [filter, loadTickets]);
 
-  function handleCreated(ticket) {
+ function handleCreated(ticket) {
     setTickets((prev) => [ticket, ...prev]);
-    // Triage runs async on the backend — poll once shortly after to pick up the result.
-    setTimeout(() => loadTickets(filter), 4000);
+    // Triage runs async on the backend — poll once shortly after to pick up the result,
+    // and refresh the budget stat at the same time since it just changed too.
+    setTimeout(() => {
+      loadTickets(filter);
+      api.getLlmBudget().then(setBudget);
+    }, 4000);
   }
-
   return (
     <div>
       <h1 className="mb-1 text-xl font-semibold text-ink">Tickets</h1>
