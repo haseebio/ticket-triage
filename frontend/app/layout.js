@@ -22,6 +22,12 @@ export const metadata = {
   },
   description:
     'AI-powered support ticket triage: automatic categorization, prioritization, and routing for support teams.',
+  verification: {
+    google: 'vyJycu4ZxnyHOe0ushH5fxzlgsq_62d_o9I2OM0KLk8',
+    other: {
+      'msvalidate.01': 'C5B69267DEEA4D40FA3765ECD5754B83',
+    },
+  },
 };
 
 export default function RootLayout({ children }) {
