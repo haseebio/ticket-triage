@@ -6,12 +6,16 @@ import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { getToken, setToken } from '@/lib/auth';
 
+const DEMO_EMAIL = 'agent@example.com';
+const DEMO_PASSWORD = 'changeme123';
+
 export default function LoginPage() {
   const router = useRouter();
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [error, setError] = useState('');
   const [loading, setLoading] = useState(false);
+  const [copiedField, setCopiedField] = useState(null);
 
   useEffect(() => {
     if (getToken()) router.replace('/dashboard');
@@ -32,8 +36,14 @@ export default function LoginPage() {
     }
   }
 
+  async function copyToClipboard(text, field) {
+    await navigator.clipboard.writeText(text);
+    setCopiedField(field);
+    setTimeout(() => setCopiedField(null), 1500);
+  }
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background px-4">
+    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -44,7 +54,31 @@ export default function LoginPage() {
           TRIAGE
         </div>
         <h1 className="mb-1 text-lg font-semibold text-ink">Sign in</h1>
-        <p className="mb-6 text-sm text-fog">Agent and admin access to the ticket queue.</p>
+        <p className="mb-4 text-sm text-fog">Agent and admin access to the ticket queue.</p>
+
+        <div className="mb-6 rounded-md border border-line bg-primary-soft/40 p-3 text-xs">
+          <p className="mb-2 font-medium text-ink">Demo account</p>
+          <div className="flex items-center justify-between gap-2 py-0.5">
+            <span className="font-mono text-fog">{DEMO_EMAIL}</span>
+            <button
+              type="button"
+              onClick={() => copyToClipboard(DEMO_EMAIL, 'email')}
+              className="text-primary hover:underline"
+            >
+              {copiedField === 'email' ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+          <div className="flex items-center justify-between gap-2 py-0.5">
+            <span className="font-mono text-fog">{DEMO_PASSWORD}</span>
+            <button
+              type="button"
+              onClick={() => copyToClipboard(DEMO_PASSWORD, 'password')}
+              className="text-primary hover:underline"
+            >
+              {copiedField === 'password' ? 'Copied' : 'Copy'}
+            </button>
+          </div>
+        </div>
 
         <form onSubmit={handleSubmit} className="flex flex-col gap-4">
           <label className="flex flex-col gap-1.5 text-sm text-ink">
