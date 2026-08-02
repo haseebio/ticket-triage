@@ -1,0 +1,26 @@
+const express = require('express');
+const securityMiddleware = require('./middleware/security');
+const { apiLimiter } = require('./middleware/rateLimiter');
+const { errorHandler, notFound } = require('./middleware/errorHandler');
+const authRoutes = require('./routes/auth');
+const ticketRoutes = require('./routes/tickets');
+const categoryRoutes = require('./routes/categories');
+const statusRoutes = require('./routes/status');
+
+const app = express();
+
+app.use(...securityMiddleware);
+app.use(express.json({ limit: '100kb' }));
+app.use('/api', apiLimiter);
+
+app.get('/health', (req, res) => res.json({ ok: true }));
+
+app.use('/api/auth', authRoutes);
+app.use('/api/tickets', ticketRoutes);
+app.use('/api/categories', categoryRoutes);
+app.use('/api/status', statusRoutes);
+
+app.use(notFound);
+app.use(errorHandler);
+
+module.exports = app;

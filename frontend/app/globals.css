@@ -1,0 +1,31 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+body {
+  background-color: #ffffff;
+  background-image: radial-gradient(circle at top left, rgba(255, 107, 74, 0.06), transparent 40%),
+    radial-gradient(circle at bottom right, rgba(255, 201, 60, 0.06), transparent 40%);
+  background-attachment: fixed;
+  color: #1f2937;
+}
+
+.glass {
+  background-color: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+}
+
+/* Visible keyboard focus everywhere, not just the browser default outline. */
+:focus-visible {
+  outline: 2px solid #ff6b4a;
+  outline-offset: 2px;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}
