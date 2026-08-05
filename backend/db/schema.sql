@@ -40,7 +40,8 @@ CREATE TABLE IF NOT EXISTS tickets (
   triage_status   VARCHAR(20) NOT NULL DEFAULT 'pending'
                     CHECK (triage_status IN ('pending', 'processing', 'done', 'failed', 'quota_exceeded')),
   created_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
-  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now()
+  updated_at      TIMESTAMPTZ NOT NULL DEFAULT now(),
+  resolved_at     TIMESTAMPTZ
 );
 
 CREATE TABLE IF NOT EXISTS audit_log (

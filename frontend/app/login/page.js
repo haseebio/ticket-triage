@@ -2,6 +2,7 @@
 
 import { useEffect, useState } from 'react';
 import { useRouter } from 'next/navigation';
+import Link from 'next/link';
 import { motion } from 'framer-motion';
 import { api } from '@/lib/api';
 import { getToken, setToken } from '@/lib/auth';
@@ -43,7 +44,7 @@ export default function LoginPage() {
   }
 
   return (
-    <div className="flex min-h-screen items-center justify-center bg-paper px-4">
+    <div className="flex min-h-screen flex-col items-center justify-center bg-paper px-4">
       <motion.div
         initial={{ opacity: 0, y: 8 }}
         animate={{ opacity: 1, y: 0 }}
@@ -51,7 +52,7 @@ export default function LoginPage() {
         className="w-full max-w-sm rounded-xl border border-line bg-surface p-8 shadow-sm"
       >
         <div className="mb-6 font-mono text-sm font-semibold tracking-wide text-primary">
-          TRIAGE
+          TICKETHANDLER
         </div>
         <h1 className="mb-1 text-lg font-semibold text-ink">Sign in</h1>
         <p className="mb-4 text-sm text-fog">Agent and admin access to the ticket queue.</p>
@@ -114,6 +115,11 @@ export default function LoginPage() {
           </button>
         </form>
       </motion.div>
+
+      <div className="mt-4 flex gap-4 text-xs text-fog">
+        <Link href="/about" className="hover:text-ink">About</Link>
+        <Link href="/developer" className="hover:text-ink">Developer</Link>
+      </div>
     </div>
   );
 }

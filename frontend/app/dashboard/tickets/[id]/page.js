@@ -43,8 +43,26 @@ export default function TicketDetailPage() {
         <div>
           <p className="font-mono text-xs text-fog">#{ticket.id}</p>
           <h1 className="text-xl font-semibold text-ink">{ticket.subject}</h1>
+          {ticket.requester_email && (
+            <p className="mt-1 text-xs text-fog">From: {ticket.requester_email}</p>
+          )}
         </div>
         <StatusBadge value={ticket.status} />
+      </div>
+
+      <div className="mb-6 flex flex-wrap gap-3">
+        <div className="rounded-lg border border-primary/30 bg-primary-soft/40 px-4 py-2">
+          <p className="text-xs uppercase tracking-wide text-primary">Created</p>
+          <p className="font-mono text-sm font-semibold text-ink">
+            {new Date(ticket.created_at).toLocaleString()}
+          </p>
+        </div>
+        <div className="rounded-lg border border-line bg-surface px-4 py-2">
+          <p className="text-xs uppercase tracking-wide text-fog">Resolved</p>
+          <p className="font-mono text-sm font-semibold text-ink">
+            {ticket.resolved_at ? new Date(ticket.resolved_at).toLocaleString() : 'Not yet resolved'}
+          </p>
+        </div>
       </div>
 
       {ticket.triage_status === 'done' && (

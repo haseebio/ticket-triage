@@ -11,6 +11,15 @@ const STRIPE = {
   closed: 'bg-fog',
 };
 
+function formatTimestamp(value) {
+  return new Date(value).toLocaleString(undefined, {
+    month: 'short',
+    day: 'numeric',
+    hour: '2-digit',
+    minute: '2-digit',
+  });
+}
+
 export default function TicketRow({ ticket, index }) {
   return (
     <motion.div
@@ -28,6 +37,7 @@ export default function TicketRow({ ticket, index }) {
           <p className="truncate text-sm font-medium text-ink">{ticket.subject}</p>
           <p className="truncate font-mono text-xs text-fog">
             #{ticket.id} · {ticket.category_name || 'uncategorized'}
+            {ticket.requester_email ? ` · ${ticket.requester_email}` : ''}
           </p>
         </div>
 
@@ -39,8 +49,8 @@ export default function TicketRow({ ticket, index }) {
 
         <StatusBadge value={ticket.triage_status === 'done' ? ticket.status : ticket.triage_status} />
 
-        <span className="pr-4 font-mono text-xs text-fog">
-          {new Date(ticket.created_at).toLocaleDateString()}
+        <span className="pr-4 font-mono text-xs font-medium text-primary">
+          {formatTimestamp(ticket.created_at)}
         </span>
       </Link>
     </motion.div>

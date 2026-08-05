@@ -87,6 +87,11 @@ async function updateTicket(req, res, next) {
       `UPDATE tickets SET
          status = COALESCE($1, status),
          assignee_id = COALESCE($2, assignee_id),
+         resolved_at = CASE
+           WHEN $1 = 'resolved' THEN now()
+           WHEN $1 IS NOT NULL THEN NULL
+           ELSE resolved_at
+         END,
          updated_at = now()
        WHERE id = $3 RETURNING *`,
       [status ?? null, assigneeId ?? null, req.params.id]

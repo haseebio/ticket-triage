@@ -6,6 +6,7 @@ import { api } from '@/lib/api';
 export default function NewTicketForm({ onCreated }) {
   const [subject, setSubject] = useState('');
   const [body, setBody] = useState('');
+  const [requesterEmail, setRequesterEmail] = useState('');
   const [error, setError] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
@@ -14,9 +15,15 @@ export default function NewTicketForm({ onCreated }) {
     setError('');
     setSubmitting(true);
     try {
-      const ticket = await api.createTicket({ subject, body, source: 'form' });
+      const ticket = await api.createTicket({
+        subject,
+        body,
+        requesterEmail: requesterEmail || undefined,
+        source: 'form',
+      });
       setSubject('');
       setBody('');
+      setRequesterEmail('');
       onCreated(ticket);
     } catch (err) {
       setError(err.message);
@@ -35,6 +42,13 @@ export default function NewTicketForm({ onCreated }) {
           value={subject}
           onChange={(e) => setSubject(e.target.value)}
           className="flex-1 rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-primary"
+        />
+        <input
+          type="email"
+          placeholder="Your email (optional)"
+          value={requesterEmail}
+          onChange={(e) => setRequesterEmail(e.target.value)}
+          className="sm:w-56 rounded-md border border-line px-3 py-2 text-sm outline-none focus:border-primary"
         />
         <button
           type="submit"

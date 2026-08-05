@@ -20,14 +20,14 @@ export default function DashboardLayout({ children }) {
 
   if (!checked) {
     return (
-      <div className="flex h-screen items-center justify-center bg-background">
+      <div className="flex h-screen items-center justify-center bg-paper">
         <LoadingSpinner label="Checking session" />
       </div>
     );
   }
 
   return (
-    <div className="flex h-screen bg-background">
+    <div className="flex h-screen bg-paper">
       <Sidebar />
       <main className="flex-1 overflow-y-auto p-6 md:p-8">{children}</main>
     </div>
