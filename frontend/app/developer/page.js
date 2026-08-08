@@ -27,7 +27,7 @@ export default function DeveloperPage() {
         <h2 className="mb-3 text-sm font-medium uppercase tracking-wide text-primary">Links</h2>
         <div className="flex flex-wrap gap-3">
           {LINKS.map(([label, href]) => (
-            
+            <a
               key={label}
               href={href}
               target={href.startsWith('http') ? '_blank' : undefined}
