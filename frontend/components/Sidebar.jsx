@@ -4,7 +4,11 @@ import Link from 'next/link';
 import { usePathname, useRouter } from 'next/navigation';
 import { clearToken } from '@/lib/auth';
 
-const LINKS = [{ href: '/dashboard', label: 'Tickets' }];
+const LINKS = [
+  { href: '/dashboard', label: 'Tickets' },
+  { href: '/about', label: 'About' },
+  { href: '/developer', label: 'Developer' },
+];
 
 export default function Sidebar() {
   const pathname = usePathname();
@@ -19,7 +23,7 @@ export default function Sidebar() {
     <aside className="glass flex h-screen w-56 flex-col justify-between border-r border-line px-4 py-6">
       <div>
         <div className="mb-8 bg-brand-gradient bg-clip-text px-2 font-mono text-sm font-semibold tracking-wide text-transparent">
-          TRIAGE
+          TICKETHANDLER
         </div>
         <nav className="flex flex-col gap-1">
           {LINKS.map((link) => {
