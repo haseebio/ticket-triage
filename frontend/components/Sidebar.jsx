@@ -6,8 +6,8 @@ import { clearToken } from '@/lib/auth';
 
 const LINKS = [
   { href: '/dashboard', label: 'Tickets' },
-  { href: '/about', label: 'About' },
-  { href: '/developer', label: 'Developer' },
+  { href: '/dashboard/about', label: 'About' },
+  { href: '/dashboard/developer', label: 'Developer' },
 ];
 
 export default function Sidebar() {
@@ -27,7 +27,10 @@ export default function Sidebar() {
         </div>
         <nav className="flex flex-col gap-1">
           {LINKS.map((link) => {
-            const active = pathname.startsWith(link.href);
+            const active =
+              link.href === '/dashboard'
+                ? pathname === '/dashboard' || pathname.startsWith('/dashboard/tickets')
+                : pathname.startsWith(link.href);
             return (
               <Link
                 key={link.href}
