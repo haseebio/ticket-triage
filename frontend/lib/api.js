@@ -37,6 +37,15 @@ export const api = {
     request('/api/tickets', { method: 'POST', body: JSON.stringify(payload) }),
   updateTicket: (id, payload) =>
     request(`/api/tickets/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  retryTriage: (id) => request(`/api/tickets/${id}/retry-triage`, { method: 'POST' }),
   getCategories: () => request('/api/categories'),
   getLlmBudget: () => request('/api/status/llm-budget'),
+  getUsers: () => request('/api/users'),
+  getRoutingRules: () => request('/api/routing-rules'),
+  createRoutingRule: (payload) =>
+    request('/api/routing-rules', { method: 'POST', body: JSON.stringify(payload) }),
+  updateRoutingRule: (id, payload) =>
+    request(`/api/routing-rules/${id}`, { method: 'PATCH', body: JSON.stringify(payload) }),
+  deleteRoutingRule: (id) => request(`/api/routing-rules/${id}`, { method: 'DELETE' }),
+  getAnalyticsSummary: () => request('/api/analytics/summary'),
 };

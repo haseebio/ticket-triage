@@ -15,33 +15,50 @@ const FILTERS = [
   { label: 'Resolved', value: 'resolved' },
 ];
 
+const PAGE_SIZE = 20;
+
 export default function DashboardPage() {
   const [tickets, setTickets] = useState([]);
+  const [total, setTotal] = useState(0);
   const [budget, setBudget] = useState(null);
   const [filter, setFilter] = useState('');
+  const [page, setPage] = useState(1);
   const [loading, setLoading] = useState(true);
 
-  const loadTickets = useCallback(async (status) => {
-    const data = await api.getTickets(status ? { status } : {});
-    setTickets(data || []);
+  const loadTickets = useCallback(async (status, pageNum) => {
+    const params = { page: pageNum, limit: PAGE_SIZE, ...(status ? { status } : {}) };
+    const data = await api.getTickets(params);
+    setTickets(data?.tickets || []);
+    setTotal(data?.total || 0);
   }, []);
 
   useEffect(() => {
     setLoading(true);
-    Promise.all([loadTickets(filter), api.getLlmBudget()])
+    Promise.all([loadTickets(filter, page), api.getLlmBudget()])
       .then(([, budgetData]) => setBudget(budgetData))
       .finally(() => setLoading(false));
-  }, [filter, loadTickets]);
+  }, [filter, page, loadTickets]);
 
- function handleCreated(ticket) {
-    setTickets((prev) => [ticket, ...prev]);
+  function handleFilterChange(value) {
+    setFilter(value);
+    setPage(1);
+  }
+
+  function handleCreated(ticket) {
+    if (page === 1) {
+      setTickets((prev) => [ticket, ...prev].slice(0, PAGE_SIZE));
+    }
+    setTotal((prev) => prev + 1);
     // Triage runs async on the backend — poll once shortly after to pick up the result,
     // and refresh the budget stat at the same time since it just changed too.
     setTimeout(() => {
-      loadTickets(filter);
+      loadTickets(filter, page);
       api.getLlmBudget().then(setBudget);
     }, 4000);
   }
+
+  const totalPages = Math.max(Math.ceil(total / PAGE_SIZE), 1);
+
   return (
     <div>
       <h1 className="mb-1 text-xl font-semibold text-ink">Tickets</h1>
@@ -57,7 +74,7 @@ export default function DashboardPage() {
         {FILTERS.map((f) => (
           <button
             key={f.value}
-            onClick={() => setFilter(f.value)}
+            onClick={() => handleFilterChange(f.value)}
             className={`rounded-md px-3 py-1.5 text-sm transition-colors ${
               filter === f.value ? 'bg-primary text-white' : 'text-fog hover:bg-surface'
             }`}
@@ -74,13 +91,37 @@ export default function DashboardPage() {
           No tickets yet — submit one above to see triage in action.
         </p>
       ) : (
-        <div className="flex flex-col gap-2">
-          <AnimatePresence>
-            {tickets.map((ticket, i) => (
-              <TicketRow key={ticket.id} ticket={ticket} index={i} />
-            ))}
-          </AnimatePresence>
-        </div>
+        <>
+          <div className="flex flex-col gap-2">
+            <AnimatePresence>
+              {tickets.map((ticket, i) => (
+                <TicketRow key={ticket.id} ticket={ticket} index={i} />
+              ))}
+            </AnimatePresence>
+          </div>
+
+          {totalPages > 1 && (
+            <div className="mt-4 flex items-center justify-between text-sm">
+              <button
+                onClick={() => setPage((p) => Math.max(p - 1, 1))}
+                disabled={page === 1}
+                className="rounded-md border border-line px-3 py-1.5 text-fog transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Previous
+              </button>
+              <span className="text-fog">
+                Page {page} of {totalPages} · {total} tickets
+              </span>
+              <button
+                onClick={() => setPage((p) => Math.min(p + 1, totalPages))}
+                disabled={page === totalPages}
+                className="rounded-md border border-line px-3 py-1.5 text-fog transition-colors hover:border-ink hover:text-ink disabled:cursor-not-allowed disabled:opacity-40"
+              >
+                Next
+              </button>
+            </div>
+          )}
+        </>
       )}
     </div>
   );

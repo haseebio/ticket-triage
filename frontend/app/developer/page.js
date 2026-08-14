@@ -1,5 +1,6 @@
 import PublicNav from '@/components/PublicNav';
 import DeveloperContent from '@/components/DeveloperContent';
+import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 
 export const metadata = {
   title: 'Developer',
@@ -26,11 +27,17 @@ function developerJsonLd() {
   };
 }
 
+const breadcrumbs = breadcrumbJsonLd([
+  { name: 'Home', url: 'https://tickethandler-haseeb.vercel.app' },
+  { name: 'Developer', url: 'https://tickethandler-haseeb.vercel.app/developer' },
+]);
+
 export default function DeveloperPage() {
   return (
     <div className="min-h-screen bg-paper">
       <PublicNav />
       <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(developerJsonLd()) }} />
+      <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbs) }} />
       <main>
         <DeveloperContent />
       </main>

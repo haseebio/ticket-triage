@@ -8,12 +8,15 @@ import RoutingTrace from '@/components/RoutingTrace';
 import LoadingSpinner from '@/components/LoadingSpinner';
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'resolved', 'closed'];
+const RETRYABLE_TRIAGE_STATUSES = ['quota_exceeded', 'failed'];
 
 export default function TicketDetailPage() {
   const { id } = useParams();
   const router = useRouter();
   const [ticket, setTicket] = useState(null);
   const [updating, setUpdating] = useState(false);
+  const [retrying, setRetrying] = useState(false);
+  const [retryError, setRetryError] = useState(null);
 
   useEffect(() => {
     api.getTicket(id).then(setTicket);
@@ -26,6 +29,21 @@ export default function TicketDetailPage() {
       setTicket((prev) => ({ ...prev, ...updated }));
     } finally {
       setUpdating(false);
+    }
+  }
+
+  async function handleRetryTriage() {
+    setRetrying(true);
+    setRetryError(null);
+    try {
+      await api.retryTriage(id);
+      // Retry runs in the background on the server, same as initial triage —
+      // reflect that immediately rather than waiting on a refetch.
+      setTicket((prev) => ({ ...prev, triage_status: 'processing' }));
+    } catch (err) {
+      setRetryError(err.message);
+    } finally {
+      setRetrying(false);
     }
   }
 
@@ -77,9 +95,26 @@ export default function TicketDetailPage() {
 
       {ticket.triage_status !== 'done' && (
         <div className="mb-6 rounded-lg border border-dashed border-line p-4 text-sm text-fog">
-          <StatusBadge value={ticket.triage_status} />
-          {ticket.triage_status === 'quota_exceeded' &&
-            ' — the AI budget for today is used up. This ticket will need manual triage.'}
+          <div className="flex items-center justify-between gap-4">
+            <div>
+              <StatusBadge value={ticket.triage_status} />
+              {ticket.triage_status === 'quota_exceeded' &&
+                ' — the AI budget for today is used up. This ticket will need manual triage.'}
+              {ticket.triage_status === 'failed' &&
+                ' — the last triage attempt failed. You can retry it below.'}
+            </div>
+
+            {RETRYABLE_TRIAGE_STATUSES.includes(ticket.triage_status) && (
+              <button
+                onClick={handleRetryTriage}
+                disabled={retrying}
+                className="shrink-0 rounded-md border border-primary px-3 py-1.5 text-xs font-medium text-primary transition-colors hover:bg-primary hover:text-white disabled:cursor-not-allowed disabled:opacity-50"
+              >
+                {retrying ? 'Retrying…' : 'Retry triage'}
+              </button>
+            )}
+          </div>
+          {retryError && <p className="mt-2 text-xs text-signal-red">{retryError}</p>}
         </div>
       )}
 
