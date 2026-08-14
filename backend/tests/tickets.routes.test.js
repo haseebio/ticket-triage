@@ -32,12 +32,20 @@ describe('GET /api/tickets', () => {
     expect(res.status).toBe(401);
   });
 
-  test('returns tickets for an authenticated request', async () => {
-    pool.query.mockResolvedValueOnce({ rows: [{ id: 1, subject: 'Cannot log in' }] });
+  test('returns paginated tickets for an authenticated request', async () => {
+    // listTickets now runs a COUNT(*) query first, then the paginated SELECT.
+    pool.query
+      .mockResolvedValueOnce({ rows: [{ count: '1' }] })
+      .mockResolvedValueOnce({ rows: [{ id: 1, subject: 'Cannot log in' }] });
 
     const res = await request(app).get('/api/tickets').set('Authorization', authHeader());
     expect(res.status).toBe(200);
-    expect(res.body).toEqual([{ id: 1, subject: 'Cannot log in' }]);
+    expect(res.body).toEqual({
+      tickets: [{ id: 1, subject: 'Cannot log in' }],
+      total: 1,
+      page: 1,
+      limit: 20,
+    });
   });
 });
 

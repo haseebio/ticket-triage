@@ -6,6 +6,9 @@ const authRoutes = require('./routes/auth');
 const ticketRoutes = require('./routes/tickets');
 const categoryRoutes = require('./routes/categories');
 const statusRoutes = require('./routes/status');
+const routingRuleRoutes = require('./routes/routingRules');
+const userRoutes = require('./routes/users');
+const analyticsRoutes = require('./routes/analytics');
 
 const app = express();
 
@@ -19,6 +22,9 @@ app.use('/api/auth', authRoutes);
 app.use('/api/tickets', ticketRoutes);
 app.use('/api/categories', categoryRoutes);
 app.use('/api/status', statusRoutes);
+app.use('/api/routing-rules', routingRuleRoutes);
+app.use('/api/users', userRoutes);
+app.use('/api/analytics', analyticsRoutes);
 
 app.use(notFound);
 app.use(errorHandler);

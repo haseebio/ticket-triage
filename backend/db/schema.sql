@@ -10,6 +10,12 @@ CREATE TABLE IF NOT EXISTS users (
   created_at    TIMESTAMPTZ NOT NULL DEFAULT now()
 );
 
+CREATE TABLE IF NOT EXISTS llm_usage (
+  day_key       DATE PRIMARY KEY,
+  request_count INTEGER NOT NULL DEFAULT 0,
+  updated_at    TIMESTAMPTZ NOT NULL DEFAULT now()
+);
+
 CREATE TABLE IF NOT EXISTS categories (
   id          SERIAL PRIMARY KEY,
   name        VARCHAR(100) UNIQUE NOT NULL,

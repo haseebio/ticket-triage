@@ -4,8 +4,12 @@ const { authenticate } = require('../middleware/auth');
 
 const router = Router();
 
-router.get('/llm-budget', authenticate, (req, res) => {
-  res.json(budget.getStatus());
+router.get('/llm-budget', authenticate, async (req, res, next) => {
+  try {
+    res.json(await budget.getStatus());
+  } catch (err) {
+    next(err);
+  }
 });
 
 module.exports = router;

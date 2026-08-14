@@ -5,6 +5,7 @@ const {
   getTicket,
   createTicket,
   updateTicket,
+  retryTriage,
 } = require('../controllers/ticketController');
 const { authenticate } = require('../middleware/auth');
 const { triageLimiter } = require('../middleware/rateLimiter');
@@ -37,5 +38,7 @@ router.patch(
   ]),
   updateTicket
 );
+
+router.post('/:id/retry-triage', triageLimiter, retryTriage);
 
 module.exports = router;

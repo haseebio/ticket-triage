@@ -1,6 +1,8 @@
 const pool = require('../db/pool');
 const { classifyTicket, LlmUnavailableError } = require('./llmService');
 
+const MAX_ATTEMPTS = 2;
+
 async function logAudit(client, ticketId, actor, action, details) {
   await client.query(
     'INSERT INTO audit_log (ticket_id, actor, action, details) VALUES ($1, $2, $3, $4)',
@@ -20,6 +22,26 @@ async function resolveAssignee(client, categoryId, priority) {
   return match?.assignee_id ?? null;
 }
 
+/**
+ * Calls classifyTicket, retrying once on transient failures (timeout, network error,
+ * malformed response). Budget/rate-limit errors (LlmUnavailableError) are never
+ * retried here — retrying immediately won't help, so those propagate straight up
+ * to be marked quota_exceeded.
+ */
+async function classifyWithRetry(ticket) {
+  let lastErr;
+  for (let attempt = 1; attempt <= MAX_ATTEMPTS; attempt++) {
+    try {
+      return await classifyTicket({ subject: ticket.subject, body: ticket.body });
+    } catch (err) {
+      if (err instanceof LlmUnavailableError) throw err;
+      lastErr = err;
+      if (attempt < MAX_ATTEMPTS) continue;
+    }
+  }
+  throw lastErr;
+}
+
 /** Runs AI triage for a ticket and writes the outcome back. Never throws — the
  *  ticket's triage_status always reflects what happened. */
 async function triageTicket(ticketId) {
@@ -34,7 +56,7 @@ async function triageTicket(ticketId) {
       ticketId,
     ]);
 
-    const result = await classifyTicket({ subject: ticket.subject, body: ticket.body });
+    const result = await classifyWithRetry(ticket);
 
     const { rows: categoryRows } = await client.query(
       'SELECT id FROM categories WHERE name = $1',

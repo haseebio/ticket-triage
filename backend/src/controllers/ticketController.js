@@ -4,6 +4,10 @@ const { triageTicket } = require('../services/triageService');
 async function listTickets(req, res, next) {
   try {
     const { status, category } = req.query;
+    const page = Math.max(parseInt(req.query.page, 10) || 1, 1);
+    const limit = Math.min(Math.max(parseInt(req.query.limit, 10) || 20, 1), 50);
+    const offset = (page - 1) * limit;
+
     const conditions = [];
     const values = [];
 
@@ -17,6 +21,14 @@ async function listTickets(req, res, next) {
     }
     const where = conditions.length ? `WHERE ${conditions.join(' AND ')}` : '';
 
+    const { rows: countRows } = await pool.query(
+      `SELECT COUNT(*) FROM tickets t
+       LEFT JOIN categories c ON c.id = t.category_id
+       ${where}`,
+      values
+    );
+    const total = parseInt(countRows[0].count, 10);
+
     const { rows } = await pool.query(
       `SELECT t.*, c.name AS category_name, u.name AS assignee_name
        FROM tickets t
@@ -24,10 +36,11 @@ async function listTickets(req, res, next) {
        LEFT JOIN users u ON u.id = t.assignee_id
        ${where}
        ORDER BY t.created_at DESC
-       LIMIT 100`,
-      values
+       LIMIT $${values.length + 1} OFFSET $${values.length + 2}`,
+      [...values, limit, offset]
     );
-    res.json(rows);
+
+    res.json({ tickets: rows, total, page, limit });
   } catch (err) {
     next(err);
   }
@@ -109,4 +122,28 @@ async function updateTicket(req, res, next) {
   }
 }
 
-module.exports = { listTickets, getTicket, createTicket, updateTicket };
+async function retryTriage(req, res, next) {
+  try {
+    const { rows } = await pool.query('SELECT * FROM tickets WHERE id = $1', [req.params.id]);
+    const ticket = rows[0];
+    if (!ticket) return res.status(404).json({ error: 'Ticket not found' });
+
+    if (!['quota_exceeded', 'failed'].includes(ticket.triage_status)) {
+      return res.status(400).json({ error: 'Ticket is not eligible for retry' });
+    }
+
+    await pool.query(
+      "INSERT INTO audit_log (ticket_id, actor, action) VALUES ($1, $2, 'retry_triage')",
+      [ticket.id, req.user.name]
+    );
+
+    res.status(202).json({ message: 'Retry triggered' });
+
+    // Same fire-and-forget pattern as createTicket — the caller doesn't wait on the LLM.
+    triageTicket(ticket.id).catch((err) => console.error('Retry triage failed to start:', err));
+  } catch (err) {
+    next(err);
+  }
+}
+
+module.exports = { listTickets, getTicket, createTicket, updateTicket, retryTriage };
