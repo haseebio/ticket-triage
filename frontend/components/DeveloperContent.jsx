@@ -67,7 +67,7 @@ export default function DeveloperContent() {
       <div className="mb-14 flex items-start gap-6">
         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-full border-[3px] border-primary shadow-lg shadow-primary/20">
           <Image
-            src="/haseebio-tickethandler.jpeg"
+            src="/developer-photo.jpg"
             alt="Muhammad Haseeb Ur Rehman"
             fill
             sizes="96px"
@@ -77,8 +77,7 @@ export default function DeveloperContent() {
         <div>
           <h1 className="mb-1.5 text-2xl font-bold text-ink">Muhammad Haseeb Ur Rehman</h1>
           <p className="mb-2.5 bg-brand-gradient bg-clip-text text-sm font-semibold text-transparent">
-            Full Stack + AI Engineer · React.js · Next.js · Node.js · Python · AI-Powered Applications
-            · LLM Integrations · Building Scalable Web Solutions
+            Full-Stack Developer · MERN Stack · CS Student
           </p>
           <p className="mb-3 max-w-md text-sm leading-relaxed text-fog">
             Self-taught MERN stack developer and BS Computer Science student at the
