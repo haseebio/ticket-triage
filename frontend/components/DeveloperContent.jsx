@@ -1,13 +1,21 @@
+import Image from 'next/image';
+
 const CONNECT = [
   ['Email', 'haseebur341@gmail.com', 'mailto:haseebur341@gmail.com'],
+  ['Phone', '+92 304 4170843', 'tel:+923044170843'],
   ['LinkedIn', 'linkedin.com/in/haseebio', 'https://linkedin.com/in/haseebio'],
   ['GitHub', 'github.com/haseebio', 'https://github.com/haseebio'],
   ['Portfolio', 'haseebio-portfolio.netlify.app', 'https://haseebio-portfolio.netlify.app'],
+  ['Facebook', 'facebook.com/haseebio.dev', 'https://www.facebook.com/haseebio.dev'],
+  ['Twitter / X', 'twitter.com/haseebio_dev', 'https://www.twitter.com/haseebio_dev'],
+  ['Instagram', 'instagram.com/haseebio.dev', 'https://www.instagram.com/haseebio.dev'],
+  ['Threads', 'threads.net/@haseebio.dev', 'https://www.threads.net/@haseebio.dev'],
 ];
 
 const SKILLS = [
   ['Frontend', ['React.js', 'Next.js', 'Tailwind CSS', 'Framer Motion']],
-  ['Backend', ['Node.js', 'Express.js', 'REST APIs']],
+  ['Backend', ['Node.js', 'Express.js', 'Python', 'REST APIs']],
+  ['AI / LLM', ['Gemini API', 'LLM Integrations', 'Prompt Engineering']],
   ['Database', ['PostgreSQL', 'MongoDB']],
   ['DevOps', ['Docker', 'GitHub Actions', 'Vercel', 'Render']],
 ];
@@ -57,13 +65,20 @@ export default function DeveloperContent() {
       </span>
 
       <div className="mb-14 flex items-start gap-6">
-        <div className="flex h-24 w-24 flex-shrink-0 items-center justify-center rounded-full border-[3px] border-primary bg-brand-gradient font-mono text-2xl font-bold text-white shadow-lg shadow-primary/20">
-          MH
+        <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-full border-[3px] border-primary shadow-lg shadow-primary/20">
+          <Image
+            src="/haseebio-tickethandler.jpeg"
+            alt="Muhammad Haseeb Ur Rehman"
+            fill
+            sizes="96px"
+            className="object-cover"
+          />
         </div>
         <div>
           <h1 className="mb-1.5 text-2xl font-bold text-ink">Muhammad Haseeb Ur Rehman</h1>
           <p className="mb-2.5 bg-brand-gradient bg-clip-text text-sm font-semibold text-transparent">
-            Full Stack Developer · React.js · Next.js · Node.js · AI-Powered Applications
+            Full Stack + AI Engineer · React.js · Next.js · Node.js · Python · AI-Powered Applications
+            · LLM Integrations · Building Scalable Web Solutions
           </p>
           <p className="mb-3 max-w-md text-sm leading-relaxed text-fog">
             Self-taught MERN stack developer and BS Computer Science student at the
@@ -71,7 +86,7 @@ export default function DeveloperContent() {
             pair genuine AI integration with solid backend fundamentals.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-xs">
-            <span className="text-fog">Lahore, Pakistan</span>
+            <span className="text-fog">Lahore, Punjab, Pakistan</span>
             <span className="flex items-center gap-1.5 font-medium text-signal-green">
               <span className="h-1.5 w-1.5 rounded-full bg-signal-green" />
               Open to opportunities
@@ -81,11 +96,15 @@ export default function DeveloperContent() {
       </div>
 
       <h2 className="mb-4 text-lg font-semibold text-ink">Connect</h2>
-      <div className="mb-14 flex flex-wrap gap-3">
+      <div className="mb-3 flex flex-wrap gap-3">
         {CONNECT.map(([label, value, href]) => (
           <ConnectLink key={label} label={label} value={value} href={href} />
         ))}
       </div>
+      <p className="mb-14 text-xs text-fog">
+        Also on Discord (<span className="font-medium text-ink">haseebio.dev</span>) and WeChat
+        (<span className="font-medium text-ink">haseeb_codess</span>).
+      </p>
 
       <h2 className="mb-4 text-lg font-semibold text-ink">Technical skills</h2>
       <div className="mb-14 grid gap-3 sm:grid-cols-2">

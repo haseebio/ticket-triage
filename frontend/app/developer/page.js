@@ -4,7 +4,7 @@ import { breadcrumbJsonLd } from '@/lib/breadcrumbs';
 
 export const metadata = {
   title: 'Developer',
-  description: 'About the developer behind TicketHandler — Muhammad Haseeb Ur Rehman.',
+  description: 'About the developer behind TicketHandler — Muhammad Haseeb Ur Rehman, Full Stack + AI Engineer.',
 };
 
 function developerJsonLd() {
@@ -12,14 +12,32 @@ function developerJsonLd() {
     '@context': 'https://schema.org',
     '@type': 'Person',
     name: 'Muhammad Haseeb Ur Rehman',
-    jobTitle: 'Full Stack Developer',
+    jobTitle: 'Full Stack + AI Engineer',
     url: 'https://tickethandler-haseeb.vercel.app/developer',
+    email: 'mailto:haseebur341@gmail.com',
+    telephone: '+92-304-4170843',
     sameAs: [
       'https://github.com/haseebio',
       'https://linkedin.com/in/haseebio',
       'https://haseebio-portfolio.netlify.app',
+      'https://www.facebook.com/haseebio.dev',
+      'https://www.twitter.com/haseebio_dev',
+      'https://www.instagram.com/haseebio.dev',
+      'https://www.threads.net/@haseebio.dev',
+      'https://stackradar-dev.vercel.app',
     ],
-    knowsAbout: ['React.js', 'Next.js', 'Node.js', 'Express.js', 'PostgreSQL', 'MongoDB', 'Docker', 'AI Integration'],
+    knowsAbout: [
+      'React.js',
+      'Next.js',
+      'Node.js',
+      'Python',
+      'Express.js',
+      'PostgreSQL',
+      'MongoDB',
+      'Docker',
+      'AI Integration',
+      'LLM Integrations',
+    ],
     alumniOf: {
       '@type': 'CollegeOrUniversity',
       name: 'University of Punjab, Lahore',
