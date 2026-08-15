@@ -67,7 +67,7 @@ export default function DeveloperContent() {
       <div className="mb-14 flex items-start gap-6">
         <div className="relative h-24 w-24 flex-shrink-0 overflow-hidden rounded-full border-[3px] border-primary shadow-lg shadow-primary/20">
           <Image
-            src="/developer-photo.jpg"
+            src="/haseebio-tickethandler.jpeg"
             alt="Muhammad Haseeb Ur Rehman"
             fill
             sizes="96px"
@@ -76,13 +76,8 @@ export default function DeveloperContent() {
         </div>
         <div>
           <h1 className="mb-1.5 text-2xl font-bold text-ink">Muhammad Haseeb Ur Rehman</h1>
-          <p className="mb-2.5 bg-brand-gradient bg-clip-text text-sm font-semibold text-transparent">
+          <p className="mb-3 bg-brand-gradient bg-clip-text text-sm font-semibold text-transparent">
             Full-Stack Developer · MERN Stack · CS Student
-          </p>
-          <p className="mb-3 max-w-md text-sm leading-relaxed text-fog">
-            Self-taught MERN stack developer and BS Computer Science student at the
-            University of Punjab, Lahore (2025–2029). Building full-stack projects that
-            pair genuine AI integration with solid backend fundamentals.
           </p>
           <div className="flex flex-wrap items-center gap-4 text-xs">
             <span className="text-fog">Lahore, Punjab, Pakistan</span>
