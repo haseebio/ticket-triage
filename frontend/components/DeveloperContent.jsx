@@ -10,6 +10,8 @@ const CONNECT = [
   ['Twitter / X', 'twitter.com/haseebio_dev', 'https://www.twitter.com/haseebio_dev'],
   ['Instagram', 'instagram.com/haseebio.dev', 'https://www.instagram.com/haseebio.dev'],
   ['Threads', 'threads.net/@haseebio.dev', 'https://www.threads.net/@haseebio.dev'],
+  ['Discord', 'haseebio.dev', null],
+  ['WeChat', 'haseeb_codess', null],
 ];
 
 const SKILLS = [
@@ -26,13 +28,18 @@ const PROJECTS = [
 ];
 
 function ConnectLink({ label, value, href }) {
-  const external = href.startsWith('http');
+  const external = href?.startsWith('http');
+  const Tag = href ? 'a' : 'div';
   return (
-    <a key={label} href={href} target={external ? '_blank' : undefined} rel={external ? 'noopener noreferrer' : undefined}
-      className="rounded-lg border border-line bg-surface px-4 py-2.5 transition-colors hover:border-primary">
+    <Tag
+      href={href || undefined}
+      target={external ? '_blank' : undefined}
+      rel={external ? 'noopener noreferrer' : undefined}
+      className={`rounded-lg border border-line bg-surface px-4 py-2.5 ${href ? 'transition-colors hover:border-primary' : ''}`}
+    >
       <p className="text-[10px] font-semibold uppercase tracking-wider text-fog">{label}</p>
       <p className="text-xs font-semibold text-ink">{value}</p>
-    </a>
+    </Tag>
   );
 }
 
@@ -90,15 +97,11 @@ export default function DeveloperContent() {
       </div>
 
       <h2 className="mb-4 text-lg font-semibold text-ink">Connect</h2>
-      <div className="mb-3 flex flex-wrap gap-3">
+      <div className="mb-14 grid grid-cols-2 gap-3 sm:grid-cols-3">
         {CONNECT.map(([label, value, href]) => (
           <ConnectLink key={label} label={label} value={value} href={href} />
         ))}
       </div>
-      <p className="mb-14 text-xs text-fog">
-        Also on Discord (<span className="font-medium text-ink">haseebio.dev</span>) and WeChat
-        (<span className="font-medium text-ink">haseeb_codess</span>).
-      </p>
 
       <h2 className="mb-4 text-lg font-semibold text-ink">Technical skills</h2>
       <div className="mb-14 grid gap-3 sm:grid-cols-2">
