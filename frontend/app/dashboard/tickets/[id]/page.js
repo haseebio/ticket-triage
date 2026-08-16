@@ -9,6 +9,8 @@ import LoadingSpinner from '@/components/LoadingSpinner';
 
 const STATUS_OPTIONS = ['open', 'in_progress', 'resolved', 'closed'];
 const RETRYABLE_TRIAGE_STATUSES = ['quota_exceeded', 'failed'];
+const IN_PROGRESS_TRIAGE_STATUSES = ['pending', 'processing'];
+const POLL_INTERVAL_MS = 3000;
 
 export default function TicketDetailPage() {
   const { id } = useParams();
@@ -21,6 +23,18 @@ export default function TicketDetailPage() {
   useEffect(() => {
     api.getTicket(id).then(setTicket);
   }, [id]);
+
+  // While triage is pending/processing (including right after a retry), poll for
+  // the outcome — otherwise the UI just sits on "Triaging…" until a manual refresh.
+  useEffect(() => {
+    if (!ticket || !IN_PROGRESS_TRIAGE_STATUSES.includes(ticket.triage_status)) return;
+
+    const interval = setInterval(() => {
+      api.getTicket(id).then(setTicket).catch(() => {});
+    }, POLL_INTERVAL_MS);
+
+    return () => clearInterval(interval);
+  }, [ticket, id]);
 
   async function handleStatusChange(status) {
     setUpdating(true);
@@ -37,8 +51,8 @@ export default function TicketDetailPage() {
     setRetryError(null);
     try {
       await api.retryTriage(id);
-      // Retry runs in the background on the server, same as initial triage —
-      // reflect that immediately rather than waiting on a refetch.
+      // Retry runs in the background on the server — reflect that immediately,
+      // and the polling effect above picks up the real outcome once it lands.
       setTicket((prev) => ({ ...prev, triage_status: 'processing' }));
     } catch (err) {
       setRetryError(err.message);
@@ -102,6 +116,8 @@ export default function TicketDetailPage() {
                 ' — the AI budget for today is used up. This ticket will need manual triage.'}
               {ticket.triage_status === 'failed' &&
                 ' — the last triage attempt failed. You can retry it below.'}
+              {IN_PROGRESS_TRIAGE_STATUSES.includes(ticket.triage_status) &&
+                ' — checking back automatically every few seconds.'}
             </div>
 
             {RETRYABLE_TRIAGE_STATUSES.includes(ticket.triage_status) && (

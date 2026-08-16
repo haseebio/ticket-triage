@@ -1,18 +1,32 @@
 import { getToken, clearToken } from './auth';
 
 const BASE_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:4000';
+const REQUEST_TIMEOUT_MS = 15000;
 
 async function request(path, options = {}) {
   const token = getToken();
+  const controller = new AbortController();
+  const timeout = setTimeout(() => controller.abort(), REQUEST_TIMEOUT_MS);
 
-  const res = await fetch(`${BASE_URL}${path}`, {
-    ...options,
-    headers: {
-      'Content-Type': 'application/json',
-      ...(token && { Authorization: `Bearer ${token}` }),
-      ...options.headers,
-    },
-  });
+  let res;
+  try {
+    res = await fetch(`${BASE_URL}${path}`, {
+      ...options,
+      headers: {
+        'Content-Type': 'application/json',
+        ...(token && { Authorization: `Bearer ${token}` }),
+        ...options.headers,
+      },
+      signal: controller.signal,
+    });
+  } catch (err) {
+    if (err.name === 'AbortError') {
+      throw new Error('Request timed out — the server took too long to respond.');
+    }
+    throw new Error('Network error — could not reach the server.');
+  } finally {
+    clearTimeout(timeout);
+  }
 
   if (res.status === 401 && typeof window !== 'undefined') {
     clearToken();
