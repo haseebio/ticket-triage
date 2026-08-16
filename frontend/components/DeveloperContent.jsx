@@ -87,9 +87,8 @@ export default function DeveloperContent() {
             Full-Stack Developer · MERN Stack · CS Student
           </p>
           <p className="mb-3 max-w-md text-sm leading-relaxed text-fog">
-            Self-taught MERN stack developer and BS Computer Science student at the
-            University of Punjab, Lahore (2025–2029). Building full-stack projects that
-            pair genuine AI integration with solid backend fundamentals.
+            Full Stack + AI Engineer | React.js • Next.js • Node.js • Python | AI-Powered
+            Applications | LLM Integrations | Building Scalable Web Solutions
           </p>
           <div className="flex flex-wrap items-center gap-4 text-xs">
             <span className="text-fog">Lahore, Punjab, Pakistan</span>
