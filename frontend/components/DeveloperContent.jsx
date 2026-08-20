@@ -1,17 +1,18 @@
 import Image from 'next/image';
+import { motion } from 'framer-motion';
 
 const CONNECT = [
-  ['Email', 'haseebur341@gmail.com', 'mailto:haseebur341@gmail.com'],
-  ['Phone', '+92 304 4170843', 'tel:+923044170843'],
-  ['LinkedIn', 'linkedin.com/in/haseebio', 'https://linkedin.com/in/haseebio'],
-  ['GitHub', 'github.com/haseebio', 'https://github.com/haseebio'],
-  ['Portfolio', 'haseebio-portfolio.netlify.app', 'https://haseebio-portfolio.netlify.app'],
-  ['Facebook', 'facebook.com/haseebio.dev', 'https://www.facebook.com/haseebio.dev'],
-  ['Twitter / X', 'twitter.com/haseebio_dev', 'https://www.twitter.com/haseebio_dev'],
-  ['Instagram', 'instagram.com/haseebio.dev', 'https://www.instagram.com/haseebio.dev'],
-  ['Threads', 'threads.net/@haseebio.dev', 'https://www.threads.net/@haseebio.dev'],
-  ['Discord', 'haseebio.dev', null],
-  ['WeChat', 'haseeb_codess', null],
+  { label: 'Email', value: 'haseebur341@gmail.com', href: 'mailto:haseebur341@gmail.com', icon: '📧' },
+  { label: 'Phone', value: '+92 304 4170843', href: 'tel:+923044170843', icon: '📱' },
+  { label: 'LinkedIn', value: 'linkedin.com/in/haseebio', href: 'https://linkedin.com/in/haseebio', icon: '💼' },
+  { label: 'GitHub', value: 'github.com/haseebio', href: 'https://github.com/haseebio', icon: '🐙' },
+  { label: 'Portfolio', value: 'haseebio-portfolio.netlify.app', href: 'https://haseebio-portfolio.netlify.app', icon: '🌐' },
+  { label: 'Facebook', value: 'facebook.com/haseebio.dev', href: 'https://www.facebook.com/haseebio.dev', icon: '📘' },
+  { label: 'Twitter / X', value: 'twitter.com/haseebio_dev', href: 'https://www.twitter.com/haseebio_dev', icon: '🐦' },
+  { label: 'Instagram', value: 'instagram.com/haseebio.dev', href: 'https://www.instagram.com/haseebio.dev', icon: '📸' },
+  { label: 'Threads', value: 'threads.net/@haseebio.dev', href: 'https://www.threads.net/@haseebio.dev', icon: '🧵' },
+  { label: 'Discord', value: 'haseebio.dev', href: null, icon: '🎮' },
+  { label: 'WeChat', value: 'haseeb_codess', href: null, icon: '💬' },
 ];
 
 const SKILLS = [
@@ -27,19 +28,26 @@ const PROJECTS = [
   ['Portfolio', 'Personal developer portfolio showcasing projects, skills, and experience.', ['React.js', 'Tailwind CSS'], 'https://haseebio-portfolio.netlify.app', 'Visit'],
 ];
 
-function ConnectLink({ label, value, href }) {
+function ConnectLink({ label, value, href, icon, index }) {
   const external = href?.startsWith('http');
-  const Tag = href ? 'a' : 'div';
+  const MotionTag = href ? motion.a : motion.div;
   return (
-    <Tag
+    <MotionTag
       href={href || undefined}
       target={external ? '_blank' : undefined}
       rel={external ? 'noopener noreferrer' : undefined}
-      className={`rounded-lg border border-line bg-surface px-4 py-2.5 ${href ? 'transition-colors hover:border-primary' : ''}`}
+      initial={{ opacity: 0, y: 6 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.2, delay: Math.min(index, 10) * 0.04 }}
+      whileHover={href ? { scale: 1.03 } : undefined}
+      className={`flex items-center gap-3 rounded-lg border border-line bg-surface px-4 py-2.5 ${href ? 'transition-colors hover:border-primary' : ''}`}
     >
-      <p className="text-[10px] font-semibold uppercase tracking-wider text-fog">{label}</p>
-      <p className="text-xs font-semibold text-ink">{value}</p>
-    </Tag>
+      <span className="text-xl leading-none" aria-hidden="true">{icon}</span>
+      <div>
+        <p className="text-[10px] font-semibold uppercase tracking-wider text-fog">{label}</p>
+        <p className="text-xs font-semibold text-ink">{value}</p>
+      </div>
+    </MotionTag>
   );
 }
 
@@ -102,8 +110,8 @@ export default function DeveloperContent() {
 
       <h2 className="mb-4 text-lg font-semibold text-ink">Connect</h2>
       <div className="mb-14 grid grid-cols-2 gap-3 sm:grid-cols-3">
-        {CONNECT.map(([label, value, href]) => (
-          <ConnectLink key={label} label={label} value={value} href={href} />
+        {CONNECT.map((item, i) => (
+          <ConnectLink key={item.label} {...item} index={i} />
         ))}
       </div>
 
